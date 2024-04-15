@@ -22,8 +22,20 @@ Port Number:3306
 # Maven:
 Dependency management tool for Springboot projects.
 
-# Usage
-# Customer: 
-Register an account, log in, and perform banking transactions such as deposit, withdrawal, and fund transfer.
-# Administrator:
-Log in to the admin dashboard to manage accounts, view transaction history, and perform administrative tasks.
+# API Endpoints
+# PostMapping(/api/accounts): 
+To create new account
+# GetMapping(/api/accounts/{id})
+To get account with the given accountId
+# PutMapping(/api/accounts/{id}/deposit)
+To deposit the amount in the given accountId
+# PutMapping(/api/accounts/{id}/withdraw)
+To withdraw account from the given accountId
+# GetMapping(/api/accounts)
+To get all accounts present in database
+# DeleteMapping(/api/accounts/{id})
+To delete the account with given accountId
+# PostMapping(/api/accounts/transfer)
+To transfer money from account1 to account2
+# GetMapping(/api/accounts/{id}/transactions)
+To retrieve transaction history for the given account
