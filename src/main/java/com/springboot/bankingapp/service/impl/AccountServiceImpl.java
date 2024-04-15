@@ -5,7 +5,9 @@ import com.springboot.bankingapp.dto.TransactionDto;
 import com.springboot.bankingapp.dto.TransferFundDto;
 import com.springboot.bankingapp.entity.Account;
 import com.springboot.bankingapp.entity.Transaction;
+import com.springboot.bankingapp.exception.AccountCreationException;
 import com.springboot.bankingapp.exception.AccountException;
+import com.springboot.bankingapp.exception.AmountException;
 import com.springboot.bankingapp.mapper.AccountMapper;
 import com.springboot.bankingapp.repository.AccountRepository;
 import com.springboot.bankingapp.repository.TransactionRepository;
@@ -36,6 +38,10 @@ public class AccountServiceImpl implements AccountService {
      }
     @Override
     public AccountDto createAccount(AccountDto accountDto) {
+        if(accountDto.accountHolderName() == null)
+        {
+            throw  new AccountCreationException("Account can't be created with no name");
+        }
         Account account = AccountMapper.mapToAccount(accountDto);
         Account savedAccount = accountRepository.save(account);
         return AccountMapper.mapToAccountDto(savedAccount);
@@ -54,7 +60,7 @@ public class AccountServiceImpl implements AccountService {
     public AccountDto deposit(Long id, double amount) {
         Account account = accountRepository
                 .findById(id)
-                .orElseThrow(() -> new RuntimeException("Account does not exists"));
+                .orElseThrow(() -> new AccountException("Account does not exists"));
         double total = account.getBalance() +amount;
         account.setBalance(total);
         Account savedAccount = accountRepository.save(account);
@@ -76,7 +82,7 @@ public class AccountServiceImpl implements AccountService {
                 .orElseThrow(() -> new AccountException("Account does not exists"));
         if(account.getBalance() < amount)
         {
-            throw new AccountException("Insufficient amount");
+            throw new AmountException("Insufficient amount");
         }
         double total = account.getBalance() -amount;
         account.setBalance(total);
@@ -117,7 +123,7 @@ public class AccountServiceImpl implements AccountService {
 
         if(fromAccount.getBalance() < transferFundDto.amount())
         {
-            throw new RuntimeException("Insufficient Amount");
+            throw new AmountException("Insufficient Amount");
         }
         fromAccount.setBalance(fromAccount.getBalance() - transferFundDto.amount());
         toAccount.setBalance(toAccount.getBalance() + transferFundDto.amount());

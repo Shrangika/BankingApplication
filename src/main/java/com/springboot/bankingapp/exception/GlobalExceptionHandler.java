@@ -26,6 +26,30 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorDetails, HttpStatus.NOT_FOUND);
     }
 
+    @ExceptionHandler(AccountCreationException.class)
+    public ResponseEntity<ErrorDetails> handleAccountCreationException(AccountCreationException exception,
+                                                               WebRequest webRequest)
+    {
+        ErrorDetails errorDetails = new ErrorDetails(
+                LocalDateTime.now(),
+                exception.getMessage(),
+                webRequest.getDescription(false),"ACCOUNT_CANNOT_BE_CREATED"
+        );
+        return new ResponseEntity<>(errorDetails, HttpStatus.NOT_ACCEPTABLE);
+    }
+
+    @ExceptionHandler(AmountException.class)
+    public ResponseEntity<ErrorDetails> handleAmountException(AmountException exception,
+                                                                       WebRequest webRequest)
+    {
+        ErrorDetails errorDetails = new ErrorDetails(
+                LocalDateTime.now(),
+                exception.getMessage(),
+                webRequest.getDescription(false),"Insufficient_Balance"
+        );
+        return new ResponseEntity<>(errorDetails, HttpStatus.FORBIDDEN);
+    }
+
     //handle Generic Exception
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorDetails> handleGenericException(AccountException exception,
